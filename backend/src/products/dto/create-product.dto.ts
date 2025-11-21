@@ -1,12 +1,16 @@
 
 import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+
 
 export class CreateProductDto {
-  @IsString()
-  @IsNotEmpty()
-  title: string;
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ example: 'Красное платье', description: 'Название товара' })
+    title: string;
 
-  @IsNumber()
-  @IsPositive()
-  price: number;
+    @IsNumber()
+    @IsPositive()
+    @ApiProperty({ example: 1999, description: 'Цена товара в рублях' })
+    price: number;
 }
