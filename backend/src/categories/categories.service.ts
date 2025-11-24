@@ -4,13 +4,14 @@ import { Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Product } from '@/products/product.entity';
 
 
 @Injectable()
 export class CategoriesService {
     constructor(
         @InjectRepository(Category)
-        private readonly categoriesRepository: Repository<Category>
+        private readonly categoriesRepository: Repository<Category>,
     ) { }
 
     findAll(): Promise<Category[]> {
@@ -52,4 +53,17 @@ export class CategoriesService {
         const category = await this.findOne(id);
         await this.categoriesRepository.remove(category);
      }
+
+    async findProducts(id: number): Promise<Product[]>  {
+        const category = await this.categoriesRepository.findOne({
+            where: {id},
+            relations: ['products']
+        });
+
+        if (!category){
+            throw new NotFoundException(`Category with id ${id} not found`);
+        }
+
+        return category.products
+    }
 }

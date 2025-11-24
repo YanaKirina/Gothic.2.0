@@ -4,6 +4,7 @@ import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto'
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { Product } from '@/products/product.entity';
 
 @ApiTags('categories')
 @Controller('categories')
@@ -54,5 +55,16 @@ export class CategoriesController {
     @Delete(':id')
     remove(@Param('id', ParseIntPipe) id: number) {
         return this.categoriesService.remove(id)
+    }
+
+    @ApiOperation({ summary: 'Получить товары категории' })
+    @ApiParam({ name: 'id', description: 'ID категории', example: 1 })
+    @ApiResponse({ status: 200, description: 'Товары категории найдены' })
+    @ApiResponse({ status: 404, description: 'Категория не найдена' })
+    @Get(':id/products')
+    findProducts(
+        @Param('id', ParseIntPipe) id: number
+    ): Promise<Product[]> {
+        return this.categoriesService.findProducts(id)
     }
 }

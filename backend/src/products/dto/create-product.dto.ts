@@ -12,4 +12,9 @@ export class CreateProductDto {
     @IsPositive()
     @ApiProperty({ example: 1999, description: 'Цена товара в рублях' })
     price: number;
+
+    @IsNumber()
+    @IsPositive()
+    @ApiProperty({ example: 1, description: 'ID категории, к которой относится товар' })
+    categoryId: number;
 }
