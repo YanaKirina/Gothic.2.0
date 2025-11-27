@@ -16,11 +16,18 @@ export class ProductsService {
         private readonly categoriesRepository: Repository<Category>,
     ) { }
 
-    findAll(): Promise<Product[]> {
-        return this.productsRepository.find({
-            relations: ['category']
-        });
+    findAll(categoryId?: number): Promise<Product[]> {
+        const options: any = {
+            relations: ['category'],
+        };
+
+        if (categoryId !== undefined) {
+            options.where = { categoryId };
+        }
+
+        return this.productsRepository.find(options);
     }
+
 
     async findOne(id: number): Promise<Product> {
         const product = await this.productsRepository.findOne({

@@ -1,5 +1,5 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Body, Patch, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { Controller, Get, Param, ParseIntPipe, Post, Body, Patch, Delete, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -11,11 +11,19 @@ import { Product } from './product.entity';
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) { }
 
-    @ApiOperation({ summary: 'Получить список товаров' })
-    @ApiResponse({ status: 200, description: 'Список товаров успешно получен' })
+    @ApiOperation({ summary: 'Получить список товаров (с фильтром по категории)' })
+    @ApiQuery({
+        name: 'categoryId',
+        required: false,
+        type: Number,
+        description: 'ID категории для фильтрации товаров',
+    })
     @Get()
-    findAll(): Promise<Product[]> {
-        return this.productsService.findAll();
+    findAll(
+        @Query('categoryId') categoryId?: string,
+    ): Promise<Product[]> {
+        const parsedCategoryId = categoryId ? Number(categoryId) : undefined;
+        return this.productsService.findAll(parsedCategoryId);
     }
 
     @ApiOperation({ summary: 'Получить товар по ID' })
@@ -59,5 +67,4 @@ export class ProductsController {
         @Param('id', ParseIntPipe) id: number) {
         return this.productsService.remove(id);
     }
-
 }
