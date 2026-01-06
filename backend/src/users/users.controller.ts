@@ -9,7 +9,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-
   @ApiOperation({ summary: 'Создать аккаунт' })
       @ApiBody({ type: CreateUserDto })
   @Post('register')

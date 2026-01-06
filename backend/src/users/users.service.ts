@@ -13,7 +13,15 @@ export class UsersService {
         private readonly usersRepository: Repository<User>,
     ) { }
 
-    async create(dto: CreateUserDto): Promise<User>{
+    async findByEmail(email: string): Promise<User | null> {
+        return this.usersRepository
+            .createQueryBuilder('user')
+            .addSelect('user.passwordHash')
+            .where('user.email = :email', { email })
+            .getOne();
+    }
+
+    async create(dto: CreateUserDto): Promise<User> {
         const saltRounds = 10;
         const passwordHash = await bcrypt.hash(dto.password, saltRounds);
 
@@ -24,6 +32,7 @@ export class UsersService {
         })
 
         return await this.usersRepository.save(user);
- 
+
     }
+
 }
