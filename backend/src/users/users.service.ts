@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import * as bcrypt from 'bcrypt';
 
 
@@ -35,4 +36,15 @@ export class UsersService {
 
     }
 
+    async updateRole(id: number, dto: UpdateRoleDto): Promise<User> {
+        const user = await this.usersRepository.findOne({ where: { id } })
+
+        if (!user) {
+            throw new NotFoundException(`User with id ${id} not found`);
+        }
+
+        user.role = dto.role;
+
+        return this.usersRepository.save(user);
+    }
 }
