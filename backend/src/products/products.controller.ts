@@ -1,9 +1,15 @@
 import { Controller, Get, Param, ParseIntPipe, Post, Body, Patch, Delete, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './product.entity';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '@/auth/decorators/roles.decorator';
+import { RolesGuard } from '@/auth/guards/roles.guard';
+import { Role } from '@/users/user.entity';
+
 
 
 @ApiTags('products')
@@ -40,6 +46,9 @@ export class ProductsController {
     @ApiResponse({ status: 201, description: 'Товар успешно создан' })
     @ApiResponse({ status: 400, description: 'Неверные данные' })
     @Post()
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Admin)
     create(@Body() dto: CreateProductDto): Promise<Product> {
         return this.productsService.create(dto)
     }
@@ -51,6 +60,8 @@ export class ProductsController {
     @ApiResponse({ status: 200, description: 'Товар обновлён' })
     @ApiResponse({ status: 404, description: 'Товар не найден' })
     @Patch(':id')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Admin)
     update(
         @Param('id', ParseIntPipe) id: number,
         @Body() dto: UpdateProductDto,
@@ -63,6 +74,8 @@ export class ProductsController {
     @ApiResponse({ status: 200, description: 'Товар удалён' })
     @ApiResponse({ status: 404, description: 'Товар не найден' })
     @Delete(':id')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Admin)
     remove(
         @Param('id', ParseIntPipe) id: number) {
         return this.productsService.remove(id);

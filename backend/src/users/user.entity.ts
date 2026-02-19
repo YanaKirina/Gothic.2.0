@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn,  CreateDateColumn,  UpdateDateColumn,  Index, } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index, OneToMany, } from 'typeorm';
 import { Role } from './role.enum';
+import { Cart } from '../cart/cart.entity'
 
 @Entity()
 export class User {
@@ -28,6 +29,11 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Cart, (item) => item.user)
+  cartItems: Cart[];
+
+
 }
 
 export { Role };

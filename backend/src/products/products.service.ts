@@ -54,7 +54,10 @@ export class ProductsService {
         const product = this.productsRepository.create({
             title: dto.title,
             price: dto.price,
-            category
+            categoryId: dto.categoryId,
+            stock: dto.stock,
+            description: dto.description,
+            isActive: dto.isActive ?? true,
         })
         return await this.productsRepository.save(product);
     }
@@ -74,6 +77,18 @@ export class ProductsService {
             product.price = dto.price;
         }
 
+        if (dto.stock !== undefined) {
+            product.stock = dto.stock;
+        }
+
+        if (dto.description !== undefined) {
+            product.description = dto.description;
+        }
+
+        if (dto.isActive !== undefined) {
+            product.isActive = dto.isActive;
+        }
+
         if (dto.categoryId !== undefined) {
             const category = await this.categoriesRepository.findOne({
                 where: { id: dto.categoryId },
@@ -91,6 +106,7 @@ export class ProductsService {
 
         return this.productsRepository.save(product);
     }
+
 
     async remove(id: number): Promise<void> {
         const product = await this.findOne(id);

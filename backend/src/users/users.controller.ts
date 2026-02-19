@@ -24,8 +24,6 @@ export class UsersController {
     return req.user;
   }
 
-
-
   @ApiOperation({ summary: 'Создать аккаунт' })
   @ApiBody({ type: CreateUserDto })
   @Post('register')
