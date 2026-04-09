@@ -10,8 +10,6 @@ import { Roles } from '@/auth/decorators/roles.decorator';
 import { RolesGuard } from '@/auth/guards/roles.guard';
 import { Role } from '@/users/user.entity';
 
-
-
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
